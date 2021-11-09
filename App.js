@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-na
 import { Camera } from 'expo-camera';
 import { FontAwesome } from '@expo/vector-icons' 
 import axios from 'axios';
+
+import api from './api';
+
 export default function App(){
   const [type, setType] = useState(Camera.Constants.Type.front);
   const [hasPermission, setHasPermission] = useState(null);
@@ -36,7 +39,7 @@ export default function App(){
       setCapturedPicture(data.uri);
       console.log(capturedPicture);
       // teste do post
-      sendPicture(capturedPicture);
+      await sendPicture(capturedPicture);
       console.log('finalizou o metodo')
     }
   }
@@ -52,19 +55,16 @@ export default function App(){
         name: pictureF.split('/').pop(),
         type: 'image/jpg'
       });
-    const baseUrl = '192.168.0.13:5000/hts';
-    return axios.post(baseUrl, data)
-                .then(
-                  response => { 
-                    console.log('retornou algo sla oq é bora v? ' + response)
-                  }
-                )
-                .catch(
-                  error => {
-                    console.log('erro:' + error);
-                  }
-                )
-  }
+   
+      }
+
+  api.post("/post", ).then((response) => {
+    console.log(response);
+  })
+
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <Camera 
@@ -81,10 +81,11 @@ export default function App(){
           </TouchableOpacity>
         </View>
       </Camera>
-
+      <View style={styles.takePictureV}>
       <TouchableOpacity style={styles.takePicture}>
         <FontAwesome name="camera" size={23} color="#FFF" onPress={ takePicture }/>      
       </TouchableOpacity>
+      </View>
     </SafeAreaView>
 
   );
@@ -93,7 +94,7 @@ export default function App(){
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   camera:{
     flex: 1,
@@ -116,13 +117,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'black'
   },
   takePicture:{
+    height: 50,
+    width: 50,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#121212',
     margin: 20,
     borderRadius: 10,
-    height: 50,
   },
+  takePictureV:{
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 
 })
 
