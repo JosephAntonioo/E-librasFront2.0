@@ -2,9 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { FontAwesome } from '@expo/vector-icons' 
-import axios from 'axios';
-
-import api from './api';
 
 export default function App(){
   const [type, setType] = useState(Camera.Constants.Type.front);
@@ -48,22 +45,32 @@ export default function App(){
     console.log(picture)
     const pictureF = picture.replace("file:///", "file://")
     console.log(pictureF);
-    var data = new FormData();
-    data.append('picture', 
-      {
-        uri:pictureF,
-        name: pictureF.split('/').pop(),
-        type: 'image/jpg'
+    var image = new FormData();
+    var imgData = {
+      uri: picture,
+      type: 'image/jpg',
+      name: 'imageData'
+    }
+    image.append('imgData', imgData);   
+    console.log(image);
+    fetch('http://192.168.0.12:5000/post', {
+      method: 'POST',
+      headers: {
+        Accept: "multipart/form-data",
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Credentials": "true",
+      },
+      body: image
+    }).then((response) => {
+        console.log(response);
+      }).catch((error) => {
+        console.log(error);
       });
-   
-      }
 
-  api.post("/post", ).then((response) => {
-    console.log(response);
-  })
-
-
-
+  }
 
   return (
     <SafeAreaView style={styles.container}>
