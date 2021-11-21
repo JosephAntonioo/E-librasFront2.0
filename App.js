@@ -43,7 +43,7 @@ export default function App(){
 
   async function sendPicture(picture){
     console.log(picture)
-    const pictureF = picture.replace("file:///", "file://")
+    const pictureF = await picture.replace("file:///", "file://")
     console.log(pictureF);
     var image = new FormData();
     var imgData = {
@@ -53,7 +53,7 @@ export default function App(){
     }
     image.append('imgData', imgData);   
     console.log(image);
-    fetch('http://192.168.0.12:5000/post', {
+    await fetch('http://192.168.0.11:5000/post', {
       method: 'POST',
       headers: {
         Accept: "multipart/form-data",
