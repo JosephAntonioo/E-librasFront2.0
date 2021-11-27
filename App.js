@@ -8,7 +8,29 @@ export default function App(){
   const [hasPermission, setHasPermission] = useState(null);
   const camRef = useRef(null);
   const [capturedPicture, setCapturedPicture] = useState(null);
-
+  const [response, setResponse] = useState(null)
+  const letras = [
+    ['A',['polegar esticado vertical: afastado do indicador', 'indicador dobrado: proximo ao medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['B',['polegar dobrado: afastado do indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: proximo ao anelar', 'anelar esticado vertical: proximo ao minimo', 'minimo esticado vertical: proximo ao anelar']],
+    ['C',['polegar esticado horizontal: afastado do indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: proximo ao anelar', 'anelar esticado vertical: proximo ao minimo', 'minimo esticado vertical: proximo ao anelar']],
+    ['D',['polegar esticado horizontal: afastado do indicador', 'indicador esticado vertical: afastado do medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['E',['polegar dobrado: afastado do indicador', 'indicador dobrado: proximo ao medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['F',['polegar esticado vertical: proximo ao indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: afastado do anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['G',['polegar esticado vertical: proximo ao indicador', 'indicador esticado vertical: afastado do medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['I',['polegar dobrado: proximo ao indicador', 'indicador dobrado: proximo ao medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: afastado do minimo', 'minimo esticado vertical: afastado do anelar']],
+    ['L',['polegar esticado vertical: afastado do indicador', 'indicador esticado vertical: afastado do medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['M',['polegar esticado vertical: proximo ao indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: proximo ao anelar', 'anelar esticado vertical: proximo ao minimo', 'minimo esticado vertical: proximo ao anelar']],
+    ['N',['polegar esticado horizontal: afastado do indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: afastado do anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['O',['polegar esticado horizontal: afastado do indicador', 'indicador dobrado: proximo ao medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['P',['polegar esticado vertical: afastado do indicador', 'indicador esticado vertical: afastado do medio', 'medio esticado vertical: afastado do anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['Q',['polegar esticado vertical: afastado do indicador', 'indicador esticado vertical: afastado do medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: afastado do minimo', 'minimo esticado vertical: afastado do anelar']],
+    ['R',['polegar dobrado: afastado do indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: afastado do anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['S',['polegar dobrado: proximo ao indicador', 'indicador dobrado: proximo ao medio', 'medio dobrado: proximo ao anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['T',['polegar esticado horizontal: afastado do indicador', 'indicador dobrado: afastado do medio', 'medio esticado vertical: proximo ao anelar', 'anelar esticado vertical: proximo ao minimo', 'minimo esticado vertical: proximo ao anelar']],
+    ['U',['polegar esticado horizontal: afastado do indicador', 'indicador esticado vertical: proximo ao medio', 'medio esticado vertical: afastado do anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['V',['polegar esticado horizontal: afastado do indicador', 'indicador esticado vertical: afastado do medio', 'medio esticado vertical: afastado do anelar', 'anelar dobrado: proximo ao minimo', 'minimo dobrado: proximo ao anelar']],
+    ['W',['polegar esticado horizontal: afastado do indicador', 'indicador esticado vertical: afastado do medio', 'medio esticado vertical: proximo ao anelar', 'anelar esticado vertical: afastado do minimo', 'minimo dobrado: afastado do anelar']],
+  ]
   useEffect(() => {
     (async () => {
       const {status} = await Camera.requestCameraPermissionsAsync();
@@ -33,18 +55,17 @@ export default function App(){
   async function takePicture(){
     if(camRef){
       const data = await camRef.current.takePictureAsync();
-      setCapturedPicture(data.uri);
+      await setCapturedPicture(data.uri);
       console.log(capturedPicture);
       // teste do post
       await sendPicture(capturedPicture);
-      console.log('finalizou o metodo')
     }
   }
 
   async function sendPicture(picture){
-    console.log(picture)
+    // console.log(picture)
     const pictureF = await picture.replace("file:///", "file://")
-    console.log(pictureF);
+    // console.log(pictureF);
     var image = new FormData();
     var imgData = {
       uri: picture,
@@ -52,8 +73,8 @@ export default function App(){
       name: 'imageData'
     }
     image.append('imgData', imgData);   
-    console.log(image);
-    await fetch('http://192.168.0.11:5000/post', {
+    // console.log(image);
+    await fetch('http://192.168.0.13:5000/post', {
       method: 'POST',
       headers: {
         Accept: "multipart/form-data",
@@ -64,10 +85,27 @@ export default function App(){
         "Access-Control-Allow-Credentials": "true",
       },
       body: image
-    }).then((response) => {
-        console.log(response);
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log('Response Esperado:"{data:letraAlfabeto}" ')
+        console.log(json.data)
+        if(json.data != 'Nao foi possível identificar a mao!'){
+          console.log(letras.length)
+          for(var i = 0; i < letras.length; i++){
+            // console.log(letras[i][1]) --> Descricao | letras[i][0] --> Letra
+            // console.log(letras[i][1].toString())
+            if(letras[i][1].toString() == json.data.toString()){
+              console.log('Deu match');
+              setResponse('Letra Localizada! --> ' + letras[i][0] );
+            }
+        }
+        }else{
+          setResponse(json.data);
+        }
       }).catch((error) => {
-        console.log(error);
+        console.error(error);
+        setResponse('Erro de comunicação com a API, verifique sua conexão com internet ou aguarde alguns instantes!')
       });
 
   }
@@ -78,20 +116,20 @@ export default function App(){
         style={styles.camera}
         type={type}
         ref={camRef}
-      >
-        <View style={styles.flipButtonV}>
-          <TouchableOpacity
-            style={styles.flipButton}
-            onPress={ flipCamera }
-          >
-            <Text style={styles.flipButtonT}> Flip Camera </Text>
-          </TouchableOpacity>
+        >
+        <View style={styles.suporte}>
+        <View style={styles.buttons}>
+          <View style={styles.flipButtonV}> 
+            <FontAwesome name="undo" size={40} color="#FFF" onPress={ flipCamera } style={styles.flipButton}/> 
+          </View>
+          <View style={styles.takePictureV}> 
+           <FontAwesome name="camera" size={40} color="#FFF" onPress={ takePicture } style={styles.pictureButton}/>     
+          </View>
+        </View>
         </View>
       </Camera>
-      <View style={styles.takePictureV}>
-      <TouchableOpacity style={styles.takePicture}>
-        <FontAwesome name="camera" size={23} color="#FFF" onPress={ takePicture }/>      
-      </TouchableOpacity>
+      <View style={styles.outPutV}>
+        <Text style={styles.outPut}>{response}</Text>
       </View>
     </SafeAreaView>
 
@@ -106,37 +144,49 @@ const styles = StyleSheet.create({
   camera:{
     flex: 1,
   },
+  suporte:{
+    // justifyContent: 'center',
+    // alignContent:'flex-end'
+    alignSelf: 'auto',
+    top: '70%',
+    left: 70,
+  },
+  buttons:{
+    position:'absolute',
+    justifyContent: 'flex-end',
+    alignContent: 'flex-end',
+    flex:2,
+    height: 200,
+    width: 300,
+  },
   flipButtonV:{
-    flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-  },
-  flipButton:{
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-  },
-  flipButtonT:{
-    fontSize: 20,
-    marginBottom: 13,
-    color: '#FFF',
-    borderWidth: 1,
-    backgroundColor: 'black'
-  },
-  takePicture:{
-    height: 50,
-    width: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#121212',
-    margin: 20,
-    borderRadius: 10,
+    // backgroundColor: 'transparent',
+    flexDirection:'row',
+    justifyContent: 'flex-start',
+    marginLeft: '20%'
   },
   takePictureV:{
+    flexDirection:'row',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    marginLeft: '0%',
+  },
+  flipButton:{
+    position:'absolute',
 
+  },
+  pictureButton:{
+    flexDirection:'row',
+    justifyContent: 'center',
+  },
+  outPutV:{
+    justifyContent:'center',
+    alignItems:'center',
+    height: 100,
+  },
+  outPut:{
+    fontSize: 20
+  },
+  
 })
 
 
