@@ -7,6 +7,7 @@ export default function App(){
   const [type, setType] = useState(Camera.Constants.Type.front);
   const [hasPermission, setHasPermission] = useState(null);
   const camRef = useRef(null);
+  // capturedPicture
   const [capturedPicture, setCapturedPicture] = useState(null);
   const [response, setResponse] = useState(null)
   const letras = [
@@ -58,7 +59,7 @@ export default function App(){
       setCapturedPicture(data.uri);
       console.log(capturedPicture);
       // teste do post
-      await sP(capturedPicture);
+      await sendPicture(capturedPicture);
     }
   }
 
@@ -81,15 +82,12 @@ export default function App(){
       "Access-Control-Allow-Methods": "POST,GET",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
       "Access-Control-Allow-Credentials": "true",},
-      
     });
-    // instance.post('/mediapipe', image).then((responseMP) => console.log(responseMP));
+    instance.post('/mediapipe', image).then((responseMP) => console.log(responseMP));
     instance.get('/hw').then((responseHW) => console.log(responseHW));
     // axios.post('/mediapipe', image).then((responseA) => 
     //                                       console.log(responseA));
     return 'instance'
-
-    
   }
  
   async function sendPicture(picture){
@@ -103,7 +101,7 @@ export default function App(){
     }
     image.append('imgData', imgData);   
     console.log('Começou o método');
-    await fetch('192.168.56.101:5000/mediapipe', {
+    await fetch('http://192.168.100.7:5000/mediapipe', {
       method: 'POST',
       headers: {
         Accept: "multipart/form-data",
@@ -115,24 +113,12 @@ export default function App(){
       },
       body: image
     } )
-      .then((response) => response.json())
-      .then((json) => {
-        console.log('Response Esperado:"{data:letraAlfabeto}" ')
-        console.log(json.data)
-        if(json.data != 'Nao foi possível identificar a mao!'){
-          console.log(letras.length)
-          for(var i = 0; i < letras.length; i++){
-            // console.log(letras[i][1]) --> Descricao | letras[i][0] --> Letra
-            // console.log(letras[i][1].toString())
-            if(letras[i][1].toString() == json.data.toString()){
-              console.log('Deu match');
-              setResponse('Letra Localizada! --> ' + letras[i][0] );
-            }
-        }
-        }else{
-          setResponse(json.data);
-        }
-      }).catch((error) => {
+      .then(response => response.json())
+      .then(json => {
+                    console.log(json.data);
+                    setResponse(json.data)
+                    })
+      .catch((error) => {
         console.error(error);
         setResponse('Erro de comunicação com a API, verifique sua conexão com internet ou aguarde alguns instantes!')
       });
@@ -161,7 +147,6 @@ export default function App(){
         <Text style={styles.outPut}>{response}</Text>
       </View>
     </SafeAreaView>
-
   );
 }
 
@@ -215,7 +200,6 @@ const styles = StyleSheet.create({
   outPut:{
     fontSize: 20
   },
-  
-})
+});
 
 
