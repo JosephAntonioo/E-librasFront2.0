@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
-import { FontAwesome } from '@expo/vector-icons' 
-
+import { FontAwesome } from '@expo/vector-icons'
+import axios from 'axios'
 export default function App(){
   const [type, setType] = useState(Camera.Constants.Type.front);
   const [hasPermission, setHasPermission] = useState(null);
@@ -55,16 +55,45 @@ export default function App(){
   async function takePicture(){
     if(camRef){
       const data = await camRef.current.takePictureAsync();
-      await setCapturedPicture(data.uri);
+      setCapturedPicture(data.uri);
       console.log(capturedPicture);
       // teste do post
-      await sendPicture(capturedPicture);
+      await sP(capturedPicture);
     }
   }
 
+  async function sP(picture){
+    var image = new FormData();
+    var imgData = {
+      uri: picture,
+      type: 'image/jpg',
+      name: 'imageData'
+    };
+    image.append('imgData', imgData);
+
+    var instance = axios.create({
+      baseURL: 'http://192.168.56.255:5000/',
+      timeout: 999999,
+      headers: {
+      Accept: "multipart/form-data",
+      "Content-Type": "multipart/form-data",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST,GET",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Credentials": "true",},
+      
+    });
+    // instance.post('/mediapipe', image).then((responseMP) => console.log(responseMP));
+    instance.get('/hw').then((responseHW) => console.log(responseHW));
+    // axios.post('/mediapipe', image).then((responseA) => 
+    //                                       console.log(responseA));
+    return 'instance'
+
+    
+  }
+ 
   async function sendPicture(picture){
     // console.log(picture)
-    const pictureF = await picture.replace("file:///", "file://")
     // console.log(pictureF);
     var image = new FormData();
     var imgData = {
@@ -73,8 +102,8 @@ export default function App(){
       name: 'imageData'
     }
     image.append('imgData', imgData);   
-    // console.log(image);
-    await fetch('http://192.168.0.13:5000/post', {
+    console.log('Começou o método');
+    await fetch('192.168.56.101:5000/mediapipe', {
       method: 'POST',
       headers: {
         Accept: "multipart/form-data",
@@ -85,7 +114,7 @@ export default function App(){
         "Access-Control-Allow-Credentials": "true",
       },
       body: image
-    })
+    } )
       .then((response) => response.json())
       .then((json) => {
         console.log('Response Esperado:"{data:letraAlfabeto}" ')
