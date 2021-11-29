@@ -144,7 +144,7 @@ export default function App(){
     image.append('imgData', imgData);   
     console.log('Começou o método');
 
-    await fetch('http://192.168.0.13:5000/modulos/descricao', {
+    await fetch('http://192.168.100.7:5000/mediapipe', {
       method: 'POST',
       headers: {
         Accept: "multipart/form-data",
