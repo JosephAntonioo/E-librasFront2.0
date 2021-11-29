@@ -187,7 +187,7 @@ export default function App(){
             <FontAwesome name="undo" size={40} color="#FFF" onPress={ flipCamera } style={styles.flipButton}/> 
           </View>
           <View style={styles.takePictureV}  > 
-           <FontAwesome name="camera" size={40} color="#FFF" onPress={ takePictureMD } style={styles.pictureButton}/>     
+           <FontAwesome name="camera" size={40} color="#FFF" onPress={ takePictureMP } style={styles.pictureButton}/>     
           </View>
           <View style={styles.removeText}> 
            <FontAwesome name="trash" size={40} color="#FFF" onPress={ deleteText } style={styles.pictureButton}/>     
