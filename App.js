@@ -8,6 +8,7 @@ import Mao from './assets/mao.jpg'
 import Switch from './assets/switch.png'
 import Texto from './assets/retornotexto.png'
 import TirarFoto from './assets/tirarfoto.png'
+import 'whatwg-fetch'
 
 export default function App(){
   const [type, setType] = useState(Camera.Constants.Type.front);
@@ -49,6 +50,7 @@ export default function App(){
     })();
   }, []);
 
+
   if(hasPermission === null){
     return <View/>
   }
@@ -63,13 +65,21 @@ export default function App(){
       : Camera.Constants.Type.front)
   }
 
-  async function takePicture(){
+
+  async function takePictureMD(){
     if(camRef){
-      const data = await camRef.current.takePictureAsync();
-      setCapturedPicture(data.uri);
-      console.log(capturedPicture);
+      var data = await camRef.current.takePictureAsync();
+      await sendPictureMD(data.uri)
+    }
+  }
+
+  async function takePictureMP(){
+    if(camRef){
+      // console.log(capturedPicture);
       // teste do post
-      await sendPicture(capturedPicture);
+      var data = await camRef.current.takePictureAsync()
+      await sendPictureMP(data.uri);
+      setCapturedPicture(data.uri);
     }
   }
   async function openInfoModal() {
@@ -81,37 +91,50 @@ export default function App(){
   function deleteText(){
     setResponse(null);
   }
-
-  async function sP(picture){
+  
+  async function sendPictureMD(picture){
+    // str.replace(/xmas/i, 'Christmas')
+    
+    console.log(picture)
+    console.log('--')
     var image = new FormData();
     var imgData = {
       uri: picture,
       type: 'image/jpg',
       name: 'imageData'
-    };
-    image.append('imgData', imgData);
-
-    var instance = axios.create({
-      baseURL: 'http://192.168.56.255:5000/',
-      timeout: 999999,
-      headers: {
-      Accept: "multipart/form-data",
-      "Content-Type": "multipart/form-data",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST,GET",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      "Access-Control-Allow-Credentials": "true",},
-    });
-    instance.post('/mediapipe', image).then((responseMP) => console.log(responseMP));
-    instance.get('/hw').then((responseHW) => console.log(responseHW));
-    // axios.post('/mediapipe', image).then((responseA) => 
-    //                                       console.log(responseA));
-    return 'instance'
+    }
+    image.append('imgData', imgData);   
+    fetch('192.168.0.13:5000/hw', {method:'GET'})
+    // fetch('http://192.168.0.13:5000/modulos/descricao', 
+    // {
+    // timeout: 50000,
+    // method: 'POST',
+    // headers: {
+    //   Accept: "multipart/form-data",
+    //           "Content-Type": "multipart/form-data",
+    //           "Access-Control-Allow-Origin": "*",
+    //           "Access-Control-Allow-Methods": "POST",
+    //           "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    //           "Access-Control-Allow-Credentials": "true",
+    //         },
+    //         body: image
+    //       }
+    //     )
+    //     .then(response => response.json())
+    //     .then(json => {
+    //                   console.log(json.data);
+    //                   setResponse(json.data)
+    //                   })
+    //     .catch((error) => {
+    //       console.error(error);
+    //       setResponse('Erro de comunicação com a API, verifique sua conexão com internet ou aguarde alguns instantes!')
+    //     });
   }
- 
-  async function sendPicture(picture){
-    // console.log(picture)
+
+  async function sendPictureMP(picture){
+    console.log(picture)
     // console.log(pictureF);
+    setResponse('Carregando...')
     var image = new FormData();
     var imgData = {
       uri: picture,
@@ -120,7 +143,8 @@ export default function App(){
     }
     image.append('imgData', imgData);   
     console.log('Começou o método');
-    await fetch('http://192.168.100.7:5000/mediapipe', {
+
+    await fetch('http://192.168.0.13:5000/modulos/descricao', {
       method: 'POST',
       headers: {
         Accept: "multipart/form-data",
@@ -162,8 +186,8 @@ export default function App(){
           <View style={styles.flipButtonV}> 
             <FontAwesome name="undo" size={40} color="#FFF" onPress={ flipCamera } style={styles.flipButton}/> 
           </View>
-          <View style={styles.takePictureV}  onPress={ takePicture } > 
-           <FontAwesome name="camera" size={40} color="#FFF" onPress={ takePicture } style={styles.pictureButton}/>     
+          <View style={styles.takePictureV}  > 
+           <FontAwesome name="camera" size={40} color="#FFF" onPress={ takePictureMD } style={styles.pictureButton}/>     
           </View>
           <View style={styles.removeText}> 
            <FontAwesome name="trash" size={40} color="#FFF" onPress={ deleteText } style={styles.pictureButton}/>     
