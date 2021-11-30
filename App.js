@@ -8,6 +8,7 @@ import Mao from './assets/mao.jpg'
 import Switch from './assets/switch.png'
 import Texto from './assets/retornotexto.png'
 import TirarFoto from './assets/tirarfoto.png'
+import Lixeira from './assets/lixeira.png'
 import 'whatwg-fetch'
 
 export default function App(){
@@ -230,7 +231,7 @@ export default function App(){
                  <Image source={Texto} style={styles.imagemTutorial}/> 
                 <Text style={styles.subTitulo}>LIMPAR TEXTO</Text>
                 <Text style={styles.paragrafo}>Também é possível limpar o campo de texto pressionando o botão que está localizado na parte inferior da tela.</Text>
-                 <Image source={Texto} style={styles.imagemTutorial}/> 
+                 <Image source={Lixeira} style={styles.imagemTutorial}/> 
               </View>              
             </View>  
             <View style={styles.cabecalho}>
